@@ -87,8 +87,13 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-border/60 py-5 px-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Kopi Noit. {t("footer.rights")}
+      <div className="border-t border-border/60 py-5 px-5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-xs text-muted-foreground text-center">
+        <span>© {new Date().getFullYear()} Kopi Noit. {t("footer.rights")}</span>
+        <div className="flex items-center gap-4">
+          <Link to="/terms" className="hover:text-primary transition-colors">{t("legal.terms")}</Link>
+          <span aria-hidden>·</span>
+          <Link to="/privacy" className="hover:text-primary transition-colors">{t("legal.privacy")}</Link>
+        </div>
       </div>
     </footer>
   );
