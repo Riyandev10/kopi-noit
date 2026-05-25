@@ -12,9 +12,9 @@ function TikTokIcon({ className = "" }: { className?: string }) {
 }
 
 const socials = [
-  { href: "https://instagram.com/kopinoit", label: "Instagram", Icon: Instagram },
-  { href: "https://tiktok.com/@kopinoit", label: "TikTok", Icon: TikTokIcon },
-  { href: "https://facebook.com/kopinoit", label: "Facebook", Icon: Facebook },
+  { href: "https://www.instagram.com/kopinoit.id/", label: "Instagram", Icon: Instagram },
+  { href: "https://www.tiktok.com/@kopi.noit", label: "TikTok", Icon: TikTokIcon },
+  { href: "https://www.facebook.com/share/1Cn5EATch9/", label: "Facebook", Icon: Facebook },
   { href: "https://wa.me/6281234567890", label: "WhatsApp", Icon: MessageCircle },
 ];
 
