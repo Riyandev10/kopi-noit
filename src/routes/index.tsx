@@ -17,7 +17,6 @@ function Index() {
   const { t } = useI18n();
   return (
     <div>
-      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-5 lg:px-8 pt-16 lg:pt-24 pb-20 grid lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -57,7 +56,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Features */}
       <section className="mx-auto max-w-7xl px-5 lg:px-8 py-20 grid md:grid-cols-3 gap-6">
         {[
           { Icon: Leaf, t: t("feature.1.t"), d: t("feature.1.d") },
@@ -74,7 +72,6 @@ function Index() {
         ))}
       </section>
 
-      {/* Tagline strip */}
       <section className="border-y border-border/60 overflow-hidden">
         <div className="mx-auto max-w-7xl px-5 lg:px-8 py-10 flex flex-wrap items-baseline justify-between gap-6">
           <p className="font-display italic text-3xl md:text-5xl text-gradient-gold">"Stuck? Noit dulu."</p>

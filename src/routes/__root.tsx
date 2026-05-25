@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { I18nProvider } from "@/lib/i18n";
+import { CartProvider } from "@/lib/cart";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 
@@ -55,9 +56,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Kopi Noit — Kopi Keliling Cirebon" },
-      { name: "description", content: "Kopi Noit — kopi keliling premium dari Cirebon. Fresh dibuat saat pre-order. Stuck? Noit dulu." },
+      { name: "description", content: "Kopi Noit — kopi keliling premium dari Cirebon. Diseduh segar saat pesanan masuk. Stuck? Noit dulu." },
       { property: "og:title", content: "Kopi Noit — Kopi Keliling Cirebon" },
-      { property: "og:description", content: "Fresh dibuat saat pre-order. Kopi Susu Gula Aren khas Cirebon." },
+      { property: "og:description", content: "Kopi Susu Gula Aren khas Cirebon. Pesan online, kami antar." },
       { property: "og:type", content: "website" },
     ],
     links: [
@@ -90,11 +91,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
-        <div className="min-h-screen flex flex-col bg-grain">
-          <Header />
-          <main className="flex-1"><Outlet /></main>
-          <Footer />
-        </div>
+        <CartProvider>
+          <div className="min-h-screen flex flex-col bg-grain">
+            <Header />
+            <main className="flex-1"><Outlet /></main>
+            <Footer />
+          </div>
+        </CartProvider>
       </I18nProvider>
     </QueryClientProvider>
   );
