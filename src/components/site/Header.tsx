@@ -1,10 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingBag } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { useCart } from "@/lib/cart";
+import { Logo } from "./Logo";
 
 export function Header() {
   const { t, lang, setLang } = useI18n();
+  const { count } = useCart();
   const [open, setOpen] = useState(false);
   const { location } = useRouterState();
 
@@ -20,8 +23,10 @@ export function Header() {
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border/60">
       <div className="mx-auto max-w-7xl px-5 lg:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <span className="font-display text-2xl font-semibold tracking-tight text-gradient-gold">N</span>
-          <span className="font-display text-lg font-semibold tracking-widest uppercase">Kopi Noit</span>
+          <Logo />
+          <span className="hidden sm:inline font-display text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground">
+            Kopi
+          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -39,12 +44,20 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden sm:flex items-center text-xs font-medium border border-border rounded-full overflow-hidden">
             <button onClick={() => setLang("id")} className={`px-2.5 py-1 ${lang === "id" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>ID</button>
             <button onClick={() => setLang("en")} className={`px-2.5 py-1 ${lang === "en" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>EN</button>
           </div>
-          <Link to="/contact" className="hidden md:inline-flex items-center rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 transition">
+          <Link to="/cart" className="relative inline-flex size-9 items-center justify-center rounded-full border border-border hover:border-primary hover:text-primary transition" aria-label="Keranjang">
+            <ShoppingBag className="size-4" />
+            {count > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold flex items-center justify-center">
+                {count}
+              </span>
+            )}
+          </Link>
+          <Link to="/menu" className="hidden md:inline-flex items-center rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 transition">
             {t("cta.order")}
           </Link>
           <button className="md:hidden p-2" onClick={() => setOpen(!open)} aria-label="Menu">
