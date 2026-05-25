@@ -81,6 +81,11 @@ const translations: Record<Lang, Dict> = {
     "success.back": "Pesan lagi",
     "footer.tag": "Stuck? Noit dulu.",
     "footer.rights": "Hak cipta dilindungi.",
+    "footer.legal": "Legal",
+    "legal.terms": "Syarat & Ketentuan",
+    "legal.privacy": "Kebijakan Privasi",
+    "legal.terms.title": "Syarat & Ketentuan",
+    "legal.privacy.title": "Kebijakan Privasi",
   },
   en: {
     "nav.home": "Home",
@@ -158,6 +163,11 @@ const translations: Record<Lang, Dict> = {
     "success.back": "Order again",
     "footer.tag": "Stuck? Noit first.",
     "footer.rights": "All rights reserved.",
+    "footer.legal": "Legal",
+    "legal.terms": "Terms & Conditions",
+    "legal.privacy": "Privacy Policy",
+    "legal.terms.title": "Terms & Conditions",
+    "legal.privacy.title": "Privacy Policy",
   },
 };
 
