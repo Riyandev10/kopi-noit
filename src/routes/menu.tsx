@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Plus, Minus, Check } from "lucide-react";
+import { useState } from "react";
 import m1 from "@/assets/menu-gula-aren.jpg";
 import m2 from "@/assets/menu-americano.jpg";
 import m3 from "@/assets/menu-latte.jpg";
 import { useI18n } from "@/lib/i18n";
+import { useCart, formatIDR } from "@/lib/cart";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({
@@ -16,11 +19,23 @@ export const Route = createFileRoute("/menu")({
 
 function Menu() {
   const { t } = useI18n();
-  const items = [
-    { img: m1, t: t("menu.1.t"), d: t("menu.1.d"), price: "Rp 22K" },
-    { img: m2, t: t("menu.2.t"), d: t("menu.2.d"), price: "Rp 20K" },
-    { img: m3, t: t("menu.3.t"), d: t("menu.3.d"), price: "Rp 25K" },
+  const { add, items, inc, dec } = useCart();
+  const [justAdded, setJustAdded] = useState<string | null>(null);
+
+  const products = [
+    { id: "gula-aren", img: m1, name: t("menu.1.t"), desc: t("menu.1.d"), price: 18000 },
+    { id: "kopi-hitam", img: m2, name: t("menu.2.t"), desc: t("menu.2.d"), price: 15000 },
+    { id: "vanilla-latte", img: m3, name: t("menu.3.t"), desc: t("menu.3.d"), price: 20000 },
   ];
+
+  const qtyOf = (id: string) => items.find((i) => i.id === id)?.qty ?? 0;
+
+  const handleAdd = (p: typeof products[number]) => {
+    add({ id: p.id, name: p.name, price: p.price, img: p.img });
+    setJustAdded(p.id);
+    setTimeout(() => setJustAdded((cur) => (cur === p.id ? null : cur)), 1200);
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-5 lg:px-8 py-20">
       <div className="max-w-2xl">
@@ -30,23 +45,44 @@ function Menu() {
       </div>
 
       <div className="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
-        {items.map((it) => (
-          <article key={it.t} className="group rounded-3xl border border-border bg-card/40 overflow-hidden hover:border-primary/60 transition">
-            <div className="aspect-square overflow-hidden bg-muted">
-              <img src={it.img} alt={it.t} loading="lazy" width={1024} height={1024} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
-            </div>
-            <div className="p-6">
-              <div className="flex items-start justify-between gap-4">
-                <h3 className="font-display text-2xl leading-tight">{it.t}</h3>
-                <span className="shrink-0 rounded-full bg-primary/15 text-primary text-xs font-semibold px-3 py-1">{it.price}</span>
+        {products.map((p) => {
+          const q = qtyOf(p.id);
+          return (
+            <article key={p.id} className="group rounded-3xl border border-border bg-card/40 overflow-hidden hover:border-primary/60 transition flex flex-col">
+              <div className="aspect-square overflow-hidden bg-muted">
+                <img src={p.img} alt={p.name} loading="lazy" width={1024} height={1024} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               </div>
-              <p className="mt-3 text-sm text-muted-foreground">{it.d}</p>
-              <a href="https://wa.me/6281234567890" target="_blank" rel="noreferrer" className="mt-5 inline-flex text-sm text-primary hover:underline">
-                {t("menu.order")} →
-              </a>
-            </div>
-          </article>
-        ))}
+              <div className="p-6 flex-1 flex flex-col">
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="font-display text-2xl leading-tight">{p.name}</h3>
+                  <span className="shrink-0 rounded-full bg-primary/15 text-primary text-xs font-semibold px-3 py-1">{formatIDR(p.price)}</span>
+                </div>
+                <p className="mt-3 text-sm text-muted-foreground flex-1">{p.desc}</p>
+
+                <div className="mt-5">
+                  {q === 0 ? (
+                    <button
+                      onClick={() => handleAdd(p)}
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground py-2.5 text-sm font-medium hover:opacity-90 transition"
+                    >
+                      {justAdded === p.id ? (<><Check className="size-4" /> {t("menu.added")}</>) : (<><Plus className="size-4" /> {t("menu.add")}</>)}
+                    </button>
+                  ) : (
+                    <div className="flex items-center justify-between rounded-full border border-primary/40 bg-primary/10 p-1">
+                      <button onClick={() => dec(p.id)} aria-label="Kurangi" className="size-9 inline-flex items-center justify-center rounded-full bg-background hover:bg-primary hover:text-primary-foreground transition">
+                        <Minus className="size-4" />
+                      </button>
+                      <span className="font-display text-lg text-primary">{q}</span>
+                      <button onClick={() => inc(p.id)} aria-label="Tambah" className="size-9 inline-flex items-center justify-center rounded-full bg-background hover:bg-primary hover:text-primary-foreground transition">
+                        <Plus className="size-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   );
