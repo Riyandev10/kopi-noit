@@ -100,7 +100,7 @@ const translations: Record<Lang, Dict> = {
     "hero.tag": "Freshly brewed when you order",
     "hero.title1": "Stuck?",
     "hero.title2": "Noit first.",
-    "hero.desc": "A premium street-coffee from Cirebon. Palm sugar milk coffee, freshly brewed, bottled in 250 ml.",
+    "hero.desc": "A premium street-coffee from Cirebon. Palm sugar milk coffee, freshly brewed, served fresh in a cup.",
     "hero.promo": "PROMO • FREE delivery within Cirebon city",
     "feature.1.t": "Honest Ingredients",
     "feature.1.d": "Natural palm sugar and beans from local farmers.",
