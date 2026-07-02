@@ -16,7 +16,7 @@ const translations: Record<Lang, Dict> = {
     "hero.tag": "Diseduh segar saat pesanan masuk",
     "hero.title1": "Stuck?",
     "hero.title2": "Noit dulu.",
-    "hero.desc": "Kopi keliling premium dari Cirebon. Susu gula aren, fresh diseduh, dikemas dalam botol 250 ml.",
+    "hero.desc": "Kopi keliling premium dari Cirebon. Susu gula aren, fresh diseduh, disajikan dalam cup segar.",
     "hero.promo": "PROMO • FREE ONGKIR khusus kota Cirebon",
     "feature.1.t": "Bahan Pilihan",
     "feature.1.d": "Gula aren alami dan biji kopi pilihan dari petani lokal.",
