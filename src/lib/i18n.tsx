@@ -138,7 +138,7 @@ const translations: Record<Lang, Dict> = {
     "contact.desc": "Order via the website, Instagram DM, or WhatsApp. Free delivery within Cirebon city.",
     "contact.addr": "Cart Address",
     "contact.hours": "Opening Hours",
-    "contact.hoursVal": "Mon – Sun, 3 PM – 10 PM WIB",
+    "contact.hoursVal": "Mon – Sun, 8 AM – 10 PM WIB",
     "cart.title": "Your Cart",
     "cart.empty": "Your cart is empty.",
     "cart.browse": "Browse menu",
