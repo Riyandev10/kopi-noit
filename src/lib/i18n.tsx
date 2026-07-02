@@ -119,7 +119,7 @@ const translations: Record<Lang, Dict> = {
     "about.v3.t": "Close",
     "about.v3.d": "Rolling around the city to find you.",
     "menu.eyebrow": "Menu",
-    "menu.title": "Freshly brewed, lovingly bottled.",
+    "menu.title": "Freshly brewed, served with love.",
     "menu.desc": "Every drink is served fresh in a cup. Order now, we'll deliver.",
     "menu.add": "Add to cart",
     "menu.added": "Added",
