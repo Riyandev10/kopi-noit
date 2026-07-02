@@ -83,6 +83,13 @@ function Checkout() {
                 );
               })}
             </div>
+            {method === "qris" && (
+              <div className="mt-5 rounded-xl border border-primary/30 bg-primary/5 p-4 text-center">
+                <p className="text-sm font-medium">{t("checkout.qrisTitle")}</p>
+                <img src={qrisImg} alt="QRIS Kopi Noit" className="mx-auto mt-3 w-full max-w-[280px] rounded-lg border border-border bg-white" />
+                <p className="mt-3 text-xs text-muted-foreground">{t("checkout.qrisHint")}</p>
+              </div>
+            )}
           </div>
         </div>
 
