@@ -105,7 +105,7 @@ const translations: Record<Lang, Dict> = {
     "feature.1.t": "Honest Ingredients",
     "feature.1.d": "Natural palm sugar and beans from local farmers.",
     "feature.2.t": "Freshly Brewed",
-    "feature.2.d": "Every bottle is made when you order — no preservatives.",
+    "feature.2.d": "Every cup is made when you order — no preservatives.",
     "feature.3.t": "Street Coffee",
     "feature.3.d": "Our little cart rolls right into your neighborhood.",
     "about.eyebrow": "Our Story",
