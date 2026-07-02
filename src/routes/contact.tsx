@@ -24,22 +24,22 @@ function Contact() {
 
       <div className="mt-14 grid lg:grid-cols-5 gap-8">
         <div className="lg:col-span-2 space-y-5">
-          <a href="https://wa.me/6281234567890" target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-2xl border border-border bg-card/40 p-5 hover:border-primary transition group">
+          <a href="https://wa.me/628997999306" target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-2xl border border-border bg-card/40 p-5 hover:border-primary transition group">
             <div className="size-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition">
               <MessageCircle className="size-5" />
             </div>
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground">WhatsApp</p>
-              <p className="font-medium">+62 812-3456-7890</p>
+              <p className="font-medium">+62 899-7999-306</p>
             </div>
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-2xl border border-border bg-card/40 p-5 hover:border-primary transition group">
+          <a href="https://www.instagram.com/kopinoit.id/" target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-2xl border border-border bg-card/40 p-5 hover:border-primary transition group">
             <div className="size-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition">
               <Instagram className="size-5" />
             </div>
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Instagram</p>
-              <p className="font-medium">@kopinoit</p>
+              <p className="font-medium">@kopinoit.id</p>
             </div>
           </a>
           <div className="flex items-start gap-4 rounded-2xl border border-border bg-card/40 p-5">
