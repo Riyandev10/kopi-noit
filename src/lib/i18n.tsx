@@ -156,6 +156,8 @@ const translations: Record<Lang, Dict> = {
     "checkout.notes": "Notes (optional)",
     "checkout.pay": "Payment Method",
     "checkout.payNow": "Pay Now",
+    "checkout.qrisTitle": "Scan QRIS to pay",
+    "checkout.qrisHint": "Open your e-wallet/m-banking app, scan the code above, then click Pay Now once payment succeeds.",
     "checkout.summary": "Order Summary",
     "pay.qris": "QRIS",
     "pay.transfer": "Bank Transfer",
