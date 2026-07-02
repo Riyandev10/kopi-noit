@@ -15,7 +15,7 @@ const socials = [
   { href: "https://www.instagram.com/kopinoit.id/", label: "Instagram", Icon: Instagram },
   { href: "https://www.tiktok.com/@kopi.noit", label: "TikTok", Icon: TikTokIcon },
   { href: "https://www.facebook.com/share/1Cn5EATch9/", label: "Facebook", Icon: Facebook },
-  { href: "https://wa.me/6281234567890", label: "WhatsApp", Icon: MessageCircle },
+  { href: "https://wa.me/628997999306", label: "WhatsApp", Icon: MessageCircle },
 ];
 
 export function Footer() {
