@@ -24,9 +24,10 @@ function Menu() {
   const [justAdded, setJustAdded] = useState<string | null>(null);
 
   const products = [
-    { id: "gula-aren", img: m1, name: t("menu.1.t"), desc: t("menu.1.d"), price: 18000 },
-    { id: "kopi-hitam", img: m2, name: t("menu.2.t"), desc: t("menu.2.d"), price: 15000 },
-    { id: "vanilla-latte", img: m3, name: t("menu.3.t"), desc: t("menu.3.d"), price: 20000 },
+    { id: "gula-aren", img: m1, name: t("menu.1.t"), desc: t("menu.1.d"), price: 13000 },
+    { id: "butterscotch-latte", img: m2, name: t("menu.2.t"), desc: t("menu.2.d"), price: 14000 },
+    { id: "matcha-latte", img: m3, name: t("menu.3.t"), desc: t("menu.3.d"), price: 14000 },
+    { id: "americano", img: m4, name: t("menu.4.t"), desc: t("menu.4.d"), price: 10000 },
   ];
 
   const qtyOf = (id: string) => items.find((i) => i.id === id)?.qty ?? 0;
