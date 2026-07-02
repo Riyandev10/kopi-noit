@@ -21,7 +21,7 @@ const translations: Record<Lang, Dict> = {
     "feature.1.t": "Bahan Pilihan",
     "feature.1.d": "Gula aren alami dan biji kopi pilihan dari petani lokal.",
     "feature.2.t": "Diseduh Segar",
-    "feature.2.d": "Setiap botol dibuat saat pesanan masuk — tanpa pengawet.",
+    "feature.2.d": "Setiap cup dibuat saat pesanan masuk — tanpa pengawet.",
     "feature.3.t": "Kopi Keliling",
     "feature.3.d": "Gerobak kami siap menjemput kamu di sudut-sudut kota.",
     "about.eyebrow": "Cerita Kami",
