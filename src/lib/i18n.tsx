@@ -54,7 +54,7 @@ const translations: Record<Lang, Dict> = {
     "contact.desc": "Pesan via website, DM Instagram, atau WhatsApp. Free ongkir untuk wilayah kota Cirebon.",
     "contact.addr": "Alamat Gerobak",
     "contact.hours": "Jam Operasional",
-    "contact.hoursVal": "Senin – Minggu, 15.00 – 22.00 WIB",
+    "contact.hoursVal": "Senin – Minggu, 08.00 – 22.00 WIB",
     "cart.title": "Keranjang Pesanan",
     "cart.empty": "Keranjang kamu masih kosong.",
     "cart.browse": "Lihat menu",
