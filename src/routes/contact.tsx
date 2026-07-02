@@ -48,8 +48,8 @@ function Contact() {
             </div>
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("contact.addr")}</p>
-              <p className="font-medium">Jl. Siliwangi No. 88</p>
-              <p className="text-sm text-muted-foreground">Kota Cirebon, Jawa Barat 45131</p>
+              <p className="font-medium">Bumi Asri Dawuan Blok B3 No. 21A</p>
+              <p className="text-sm text-muted-foreground">Tengah Tani, Kab. Cirebon, Jawa Barat</p>
             </div>
           </div>
           <div className="flex items-start gap-4 rounded-2xl border border-border bg-card/40 p-5">
