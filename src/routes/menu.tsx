@@ -2,8 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Minus, Check } from "lucide-react";
 import { useState } from "react";
 import m1 from "@/assets/menu-gula-aren.jpg";
-import m2 from "@/assets/menu-americano.jpg";
-import m3 from "@/assets/menu-latte.jpg";
+import m2 from "@/assets/menu-butterscotch.jpg";
+import m3 from "@/assets/menu-matcha.jpg";
+import m4 from "@/assets/menu-americano.jpg";
 import { useI18n } from "@/lib/i18n";
 import { useCart, formatIDR } from "@/lib/cart";
 
