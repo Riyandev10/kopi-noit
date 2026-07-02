@@ -67,7 +67,7 @@ function Contact() {
           <div className="rounded-3xl overflow-hidden border border-border h-full min-h-[420px] bg-card/40">
             <iframe
               title="Lokasi Kopi Noit di Cirebon"
-              src="https://www.google.com/maps?q=Jl.+Siliwangi,+Cirebon,+Jawa+Barat&output=embed"
+              src="https://www.google.com/maps?q=Bumi+Asri+Dawuan,+Tengah+Tani,+Cirebon,+Jawa+Barat&output=embed"
               width="100%"
               height="100%"
               style={{ minHeight: 420, border: 0, filter: "invert(0.9) hue-rotate(180deg) saturate(0.7)" }}
