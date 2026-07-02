@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { CreditCard, QrCode, Banknote, ArrowRight } from "lucide-react";
 import { useCart, formatIDR } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n";
+import qrisImg from "@/assets/qris-kopinoit.jpeg";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({ meta: [{ title: "Checkout — Kopi Noit" }] }),
