@@ -111,7 +111,7 @@ const translations: Record<Lang, Dict> = {
     "about.eyebrow": "Our Story",
     "about.title": "Coffee grown from the streets of Cirebon.",
     "about.p1": "Kopi Noit was born from a simple habit: pausing for coffee when your head feels stuck. From one small cart, we serve palm-sugar milk coffee with a homely taste and an honest way.",
-    "about.p2": "Every bottle is made when you order. No old stock, no preservatives. Just coffee, milk, and real palm sugar — served with heart.",
+    "about.p2": "Every cup is made when you order. No old stock, no preservatives. Just coffee, milk, and real palm sugar — served with heart.",
     "about.v1.t": "Honest",
     "about.v1.d": "Real ingredients, never artificial sweeteners.",
     "about.v2.t": "Warm",
