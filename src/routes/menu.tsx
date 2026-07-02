@@ -2,8 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Minus, Check } from "lucide-react";
 import { useState } from "react";
 import m1 from "@/assets/menu-gula-aren.jpg";
-import m2 from "@/assets/menu-americano.jpg";
-import m3 from "@/assets/menu-latte.jpg";
+import m2 from "@/assets/menu-butterscotch.jpg";
+import m3 from "@/assets/menu-matcha.jpg";
+import m4 from "@/assets/menu-americano.jpg";
 import { useI18n } from "@/lib/i18n";
 import { useCart, formatIDR } from "@/lib/cart";
 
@@ -23,9 +24,10 @@ function Menu() {
   const [justAdded, setJustAdded] = useState<string | null>(null);
 
   const products = [
-    { id: "gula-aren", img: m1, name: t("menu.1.t"), desc: t("menu.1.d"), price: 18000 },
-    { id: "kopi-hitam", img: m2, name: t("menu.2.t"), desc: t("menu.2.d"), price: 15000 },
-    { id: "vanilla-latte", img: m3, name: t("menu.3.t"), desc: t("menu.3.d"), price: 20000 },
+    { id: "gula-aren", img: m1, name: t("menu.1.t"), desc: t("menu.1.d"), price: 13000 },
+    { id: "butterscotch-latte", img: m2, name: t("menu.2.t"), desc: t("menu.2.d"), price: 14000 },
+    { id: "matcha-latte", img: m3, name: t("menu.3.t"), desc: t("menu.3.d"), price: 14000 },
+    { id: "americano", img: m4, name: t("menu.4.t"), desc: t("menu.4.d"), price: 10000 },
   ];
 
   const qtyOf = (id: string) => items.find((i) => i.id === id)?.qty ?? 0;
@@ -44,7 +46,7 @@ function Menu() {
         <p className="mt-5 text-muted-foreground">{t("menu.desc")}</p>
       </div>
 
-      <div className="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+      <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-7">
         {products.map((p) => {
           const q = qtyOf(p.id);
           return (

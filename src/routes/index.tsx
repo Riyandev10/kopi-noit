@@ -49,8 +49,8 @@ function Index() {
               <img src={heroImg} alt="Kopi Noit — Kopi Susu Gula Aren" width={1080} height={1080} className="w-full h-auto" />
             </div>
             <div className="absolute -bottom-6 -left-6 hidden sm:block bg-card border border-border rounded-2xl px-5 py-4 shadow-xl">
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Botol</p>
-              <p className="font-display text-2xl text-primary">250 ml</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Mulai dari</p>
+              <p className="font-display text-2xl text-primary">10K</p>
             </div>
           </div>
         </div>
