@@ -46,7 +46,7 @@ function Menu() {
         <p className="mt-5 text-muted-foreground">{t("menu.desc")}</p>
       </div>
 
-      <div className="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+      <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-7">
         {products.map((p) => {
           const q = qtyOf(p.id);
           return (
