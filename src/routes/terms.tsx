@@ -28,7 +28,7 @@ function Terms() {
         { h: "1. Orders", p: "Orders are placed directly on this website. They are processed once payment is confirmed. We reserve the right to decline unreasonable orders." },
         { h: "2. Payment", p: "We accept QRIS, bank transfer, and COD. Non-COD orders are processed after funds are received." },
         { h: "3. Delivery", p: "Free delivery applies within Cirebon city. Estimated delivery is 30–60 minutes depending on distance and traffic." },
-        { h: "4. Cancellation & Refund", p: "Because every bottle is freshly brewed when you order, cancellations are only possible before brewing starts. Please contact us via WhatsApp as soon as possible." },
+        { h: "4. Cancellation & Refund", p: "Because every cup is freshly brewed when you order, cancellations are only possible before brewing starts. Please contact us via WhatsApp as soon as possible." },
         { h: "5. Complaints", p: "If anything is wrong with your order, contact us within 24 hours via WhatsApp or Instagram DM." },
         { h: "6. Changes", p: "We may update these terms at any time. Changes take effect once published on this page." },
       ];
