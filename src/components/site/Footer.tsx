@@ -56,14 +56,16 @@ export function Footer() {
         <div className="text-sm">
           <h4 className="font-semibold mb-3 text-foreground">{t("nav.contact")}</h4>
           <address className="not-italic text-muted-foreground leading-relaxed">
-            Jl. Siliwangi No. 88<br />
-            Kota Cirebon, Jawa Barat
+            Bumi Asri Dawuan Blok B3 No. 21A<br />
+            Tengah Tani, Kab. Cirebon, Jawa Barat
           </address>
           <a
-            href="mailto:hello@kopinoit.id"
+            href="https://wa.me/628997999306"
+            target="_blank"
+            rel="noreferrer"
             className="mt-2 inline-block text-muted-foreground hover:text-primary transition-colors"
           >
-            hello@kopinoit.id
+            +62 899-7999-306
           </a>
         </div>
 
