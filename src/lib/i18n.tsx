@@ -70,6 +70,8 @@ const translations: Record<Lang, Dict> = {
     "checkout.notes": "Catatan (opsional)",
     "checkout.pay": "Metode Pembayaran",
     "checkout.payNow": "Bayar Sekarang",
+    "checkout.qrisTitle": "Scan QRIS untuk membayar",
+    "checkout.qrisHint": "Buka aplikasi e-wallet/m-banking, scan kode di atas, lalu klik Bayar Sekarang setelah pembayaran berhasil.",
     "checkout.summary": "Ringkasan Pesanan",
     "pay.qris": "QRIS",
     "pay.transfer": "Transfer Bank",
