@@ -27,7 +27,7 @@ const translations: Record<Lang, Dict> = {
     "about.eyebrow": "Cerita Kami",
     "about.title": "Kopi yang tumbuh dari jalanan Cirebon.",
     "about.p1": "Kopi Noit lahir dari kebiasaan sederhana: ngopi sebentar saat pikiran mentok. Dari satu gerobak kecil, kami menyajikan kopi susu gula aren dengan rasa rumahan dan cara yang jujur.",
-    "about.p2": "Setiap botol kami buat saat kamu pesan. Tanpa stok lama, tanpa pengawet. Hanya kopi, susu, dan gula aren asli — disajikan dengan hati.",
+    "about.p2": "Setiap cup kami buat saat kamu pesan. Tanpa stok lama, tanpa pengawet. Hanya kopi, susu, dan gula aren asli — disajikan dengan hati.",
     "about.v1.t": "Jujur",
     "about.v1.d": "Bahan asli, tanpa pemanis buatan.",
     "about.v2.t": "Hangat",
