@@ -21,7 +21,7 @@ function Gallery() {
   const { t } = useI18n();
   const images = [
     { src: g1, h: "tall" }, { src: g2, h: "short" }, { src: galeriCup.url, h: "short" },
-    { src: g3, h: "tall" }, { src: g4, h: "short" }, { src: about, h: "short" },
+    { src: galeriMatcha.url, h: "tall" }, { src: galeriKopi.url, h: "short" }, { src: about, h: "short" },
   ];
   return (
     <div className="mx-auto max-w-7xl px-5 lg:px-8 py-20">
