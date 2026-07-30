@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
 import galeriCup from "@/assets/galeri-cup-siap.jpg.asset.json";
+import galeriMatcha from "@/assets/galeri-cheers-matcha.jpg.asset.json";
+import galeriKopi from "@/assets/galeri-cheers-kopi.jpg.asset.json";
 import about from "@/assets/about-story.jpg";
 import { useI18n } from "@/lib/i18n";
 
@@ -21,7 +21,7 @@ function Gallery() {
   const { t } = useI18n();
   const images = [
     { src: g1, h: "tall" }, { src: g2, h: "short" }, { src: galeriCup.url, h: "short" },
-    { src: g3, h: "tall" }, { src: g4, h: "short" }, { src: about, h: "short" },
+    { src: galeriMatcha.url, h: "tall" }, { src: galeriKopi.url, h: "short" }, { src: about, h: "short" },
   ];
   return (
     <div className="mx-auto max-w-7xl px-5 lg:px-8 py-20">
