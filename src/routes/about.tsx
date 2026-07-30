@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import aboutImg from "@/assets/about-story.jpg";
+import aboutAsset from "@/assets/tim-kopi-noit.jpg.asset.json";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
