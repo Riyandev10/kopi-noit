@@ -24,7 +24,7 @@ function Index() {
               <span className="size-1.5 rounded-full bg-primary animate-pulse" />
               {t("hero.tag")}
             </div>
-            <h1 className="mt-6 font-display text-6xl md:text-7xl lg:text-8xl font-semibold leading-[0.95]">
+            <h1 className="mt-6 font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-[0.95]">
               <span className="block">{t("hero.title1")}</span>
               <span className="block text-gradient-gold italic">{t("hero.title2")}</span>
             </h1>
@@ -48,10 +48,6 @@ function Index() {
             <div className="relative rounded-3xl overflow-hidden border border-border shadow-2xl">
               <img src={heroImg} alt="Menu Kopi Noit" width={1080} height={1080} className="w-full h-auto" />
             </div>
-            <div className="absolute bottom-4 left-4 lg:-bottom-6 lg:-left-6 hidden sm:block bg-card border border-border rounded-2xl px-5 py-4 shadow-xl">
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Mulai dari</p>
-              <p className="font-display text-2xl text-primary">10K</p>
-            </div>
           </div>
         </div>
       </section>
@@ -74,7 +70,7 @@ function Index() {
 
       <section className="border-y border-border/60 overflow-hidden">
         <div className="mx-auto max-w-7xl px-5 lg:px-8 py-10 flex flex-wrap items-baseline justify-between gap-6">
-          <p className="font-display italic text-3xl md:text-5xl text-gradient-gold">"Stuck? Noit dulu."</p>
+          <p className="font-display italic text-2xl sm:text-3xl md:text-5xl text-gradient-gold">"Stuck? Noit dulu."</p>
           <Link to="/about" className="text-sm text-muted-foreground hover:text-primary inline-flex items-center gap-2">
             {t("nav.about")} <ArrowRight className="size-4" />
           </Link>
