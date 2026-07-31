@@ -20,7 +20,7 @@ function About() {
     { t: t("about.v3.t"), d: t("about.v3.d") },
   ];
   return (
-    <div className="mx-auto max-w-7xl px-5 lg:px-8 py-20">
+    <div className="mx-auto max-w-7xl px-5 lg:px-8 py-20 overflow-x-clip">
       <div className="grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-primary">{t("about.eyebrow")}</p>
