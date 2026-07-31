@@ -1,6 +1,6 @@
-# Kopi Keliling Nusantara
+# Kopi Noit
 
-saya ingin membuat website jualan kopi keliling, saya ingin ide dari website nya seperti https://www.tuku.coffee/id dengan color DAA464 sebagai color utama, DEC384 sebagai color kedua dan E8DDB4 sebagai warna ketiga, isinya ada home, about, menu, gallery dan kontak (yang disertai dengan gmap) lalu footer, ada opsi bahasa ind/inggris dan tema websitenya jangan terang. pada gambar adalah gambaran dari kopi kami
+Kopi Noit lahir dari kebiasaan sederhana: ngopi sebentar saat pikiran mentok. Dari satu gerobak kecil, kami menyajikan kopi susu gula aren dengan rasa rumahan dan cara yang jujur.
 
 This project was built with [Lovable](https://lovable.dev).
 
