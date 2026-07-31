@@ -29,7 +29,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1">
           {links.map((l) => {
             const active = location.pathname === l.to;
             return (
@@ -57,17 +57,17 @@ export function Header() {
               </span>
             )}
           </Link>
-          <Link to="/menu" className="hidden md:inline-flex items-center rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 transition">
+          <Link to="/menu" className="hidden lg:inline-flex items-center rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 transition">
             {t("cta.order")}
           </Link>
-          <button className="md:hidden p-2" onClick={() => setOpen(!open)} aria-label="Menu">
+          <button className="lg:hidden p-2" onClick={() => setOpen(!open)} aria-label="Menu">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-border/60 bg-background/95 backdrop-blur">
+        <div className="lg:hidden border-t border-border/60 bg-background/95 backdrop-blur">
           <div className="px-5 py-4 flex flex-col gap-2">
             {links.map((l) => (
               <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="py-2 text-sm">
