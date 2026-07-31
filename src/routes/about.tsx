@@ -28,8 +28,8 @@ function About() {
           <p className="mt-6 text-muted-foreground leading-relaxed">{t("about.p1")}</p>
           <p className="mt-4 text-muted-foreground leading-relaxed">{t("about.p2")}</p>
         </div>
-        <div className="relative">
-          <div className="absolute -inset-6 bg-gradient-to-tr from-primary/20 to-transparent blur-3xl" />
+        <div className="relative isolate">
+          <div className="absolute -inset-y-6 inset-x-0 -z-10 bg-gradient-to-tr from-primary/20 to-transparent blur-3xl" />
           <img src={aboutAsset.url} alt="Tim Kopi Noit di gerobak kopi keliling Cirebon" loading="lazy" width={723} height={964} className="relative rounded-3xl border border-border w-full h-auto object-cover aspect-[3/4]" />
         </div>
       </div>
