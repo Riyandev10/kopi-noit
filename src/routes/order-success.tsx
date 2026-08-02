@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CheckCircle2, MapPin, CreditCard } from "lucide-react";
+import { CheckCircle2, MapPin, CreditCard, Banknote, MessageCircle } from "lucide-react";
 import { formatIDR } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n";
 
@@ -15,6 +15,7 @@ type Order = {
   items: { name: string; qty: number; price: number }[];
   total: number;
   method: string;
+  paymentStatus?: "paid" | "unpaid";
   customer: { name: string; phone: string; address: string; notes: string };
 };
 
@@ -38,6 +39,13 @@ function Success() {
     );
   }
 
+  const isCod = order.method === "cod";
+  const unpaid = order.paymentStatus === "unpaid" || isCod;
+  const waText = encodeURIComponent(
+    `Halo Kopi Noit, saya mau konfirmasi pesanan ${order.id} (${isCod ? "Bayar di Tempat" : "sudah dibayar"}) total ${formatIDR(order.total)}. Nama: ${order.customer.name}, alamat: ${order.customer.address}`,
+  );
+  const waHref = `https://wa.me/628997999306?text=${waText}`;
+
   const methodLabel: Record<string, string> = {
     qris: t("pay.qris"), transfer: t("pay.transfer"), cod: t("pay.cod"),
   };
@@ -46,8 +54,8 @@ function Success() {
     <div className="mx-auto max-w-3xl px-5 lg:px-8 py-20">
       <div className="rounded-3xl border border-primary/40 bg-gradient-to-br from-primary/10 via-secondary/5 to-transparent p-8 md:p-12 text-center">
         <CheckCircle2 className="size-14 mx-auto text-primary" />
-        <h1 className="mt-4 font-display text-4xl md:text-5xl text-gradient-gold">{t("success.title")}</h1>
-        <p className="mt-3 text-muted-foreground">{t("success.desc")}</p>
+        <h1 className="mt-4 font-display text-4xl md:text-5xl text-gradient-gold">{isCod ? t("success.codTitle") : t("success.title")}</h1>
+        <p className="mt-3 text-muted-foreground">{isCod ? t("success.codDesc") : t("success.desc")}</p>
         <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2 text-sm">
           <span className="text-muted-foreground">{t("success.order")}:</span>
           <span className="font-display text-primary tracking-wider">{order.id}</span>
@@ -84,7 +92,22 @@ function Success() {
               <CreditCard className="size-4" /> {t("success.method")}
             </div>
             <p className="mt-2 font-medium">{methodLabel[order.method] ?? order.method}</p>
+            <div className="mt-3 flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">{t("success.status")}</span>
+              <span className={`rounded-full border px-2.5 py-1 text-xs ${unpaid ? "border-secondary/50 bg-secondary/10 text-secondary" : "border-primary/50 bg-primary/10 text-primary"}`}>
+                {unpaid ? t("success.unpaid") : t("success.paid")}
+              </span>
+            </div>
+            {isCod && (
+              <div className="mt-3 flex items-center justify-between rounded-lg border border-border bg-background/60 px-3.5 py-2.5 text-sm">
+                <span className="inline-flex items-center gap-2 text-muted-foreground"><Banknote className="size-4" /> {t("success.prepare")}</span>
+                <span className="font-display text-primary">{formatIDR(order.total)}</span>
+              </div>
+            )}
           </div>
+          <a href={waHref} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-2xl border border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary hover:bg-primary/20 transition">
+            <MessageCircle className="size-4" /> {t("success.waConfirm")}
+          </a>
         </div>
       </div>
 
