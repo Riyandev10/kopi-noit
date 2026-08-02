@@ -40,14 +40,16 @@ function Checkout() {
       items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
       total,
       method,
+      paymentStatus: method === "cod" ? "unpaid" : "paid",
       customer: { ...form },
     };
     try { localStorage.setItem("lastOrder", JSON.stringify(payload)); } catch {}
     // Simulate payment gateway processing
+    // COD tidak lewat payment gateway — pesanan langsung dibuat
     setTimeout(() => {
       clear();
       navigate({ to: "/order-success" });
-    }, 1400);
+    }, method === "cod" ? 700 : 1400);
   };
 
   const methods: { id: PayMethod; label: string; Icon: typeof CreditCard; desc: string }[] = [
@@ -83,6 +85,16 @@ function Checkout() {
                 );
               })}
             </div>
+            {method === "cod" && (
+              <div className="mt-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
+                <p className="text-sm font-medium">{t("checkout.codTitle")}</p>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{t("checkout.codHint")}</p>
+                <div className="mt-3 flex items-center justify-between rounded-lg border border-border bg-background/60 px-3.5 py-2.5 text-sm">
+                  <span className="text-muted-foreground">{t("success.prepare")}</span>
+                  <span className="font-display text-primary">{formatIDR(total)}</span>
+                </div>
+              </div>
+            )}
             {method === "qris" && (
               <div className="mt-5 rounded-xl border border-primary/30 bg-primary/5 p-4 text-center">
                 <p className="text-sm font-medium">{t("checkout.qrisTitle")}</p>
@@ -108,7 +120,9 @@ function Checkout() {
           <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("cart.delivery")}</span><span className="text-primary">{t("cart.free")}</span></div>
           <div className="flex justify-between font-display text-lg mt-3"><span>{t("cart.total")}</span><span className="text-gradient-gold">{formatIDR(total)}</span></div>
           <button type="submit" disabled={processing} className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-60">
-            {processing ? "Memproses pembayaran…" : (<>{t("checkout.payNow")} <ArrowRight className="size-4" /></>)}
+            {processing
+              ? (method === "cod" ? t("checkout.processingOrder") : t("checkout.processingPay"))
+              : (<>{method === "cod" ? t("checkout.placeOrder") : t("checkout.payNow")} <ArrowRight className="size-4" /></>)}
           </button>
         </aside>
       </form>
