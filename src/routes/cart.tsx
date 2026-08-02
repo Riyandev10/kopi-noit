@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Minus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck } from "lucide-react";
 import { useCart, formatIDR } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n";
 
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { t } = useI18n();
-  const { items, inc, dec, remove, total } = useCart();
+  const { items, inc, dec, remove, total, count } = useCart();
 
   return (
     <div className="mx-auto max-w-4xl px-5 lg:px-8 py-20">
