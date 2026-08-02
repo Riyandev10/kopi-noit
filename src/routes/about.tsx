@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import aboutAsset from "@/assets/tim-kopi-noit.jpg.asset.json";
+import timKopiNoit from "@/assets/tim-kopi-noit.jpeg";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
@@ -30,7 +30,7 @@ function About() {
         </div>
         <div className="relative isolate">
           <div className="absolute -inset-y-6 inset-x-0 -z-10 bg-gradient-to-tr from-primary/20 to-transparent blur-3xl" />
-          <img src={aboutAsset.url} alt="Tim Kopi Noit di gerobak kopi keliling Cirebon" loading="lazy" width={723} height={964} className="relative rounded-3xl border border-border w-full h-auto object-cover aspect-[3/4]" />
+          <img src={timKopiNoit} alt="Tim Kopi Noit di gerobak kopi keliling Cirebon" loading="lazy" width={723} height={964} className="relative rounded-3xl border border-border w-full h-auto object-cover aspect-[3/4]" />
         </div>
       </div>
 
