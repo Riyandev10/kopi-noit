@@ -20,9 +20,9 @@ export const Route = createFileRoute("/gallery")({
 function Gallery() {
   const { t } = useI18n();
   const images = [
-    { src: galeriMatcha.url, h: "tall" },
-    { src: galeriKopi.url, h: "short" },
-    { src: galeriCup.url, h: "short" },
+    { src: galeriMatcha, h: "tall" },
+    { src: galeriKopi, h: "short" },
+    { src: galeriCup, h: "short" },
     { src: g1, h: "tall" },
     { src: g2, h: "short" },
     { src: about, h: "short" },
