@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
-import galeriCup from "@/assets/galeri-cup-siap.jpg.asset.json";
-import galeriMatcha from "@/assets/galeri-cheers-matcha.jpg.asset.json";
-import galeriKopi from "@/assets/galeri-cheers-kopi.jpg.asset.json";
+import galeriCup from "@/assets/galeri-cup-siap.jpeg";
+import galeriMatcha from "@/assets/galeri-cheers-matcha.jpeg";
+import galeriKopi from "@/assets/galeri-cheers-kopi.jpeg";
 import about from "@/assets/about-story.jpg";
 import { useI18n } from "@/lib/i18n";
 
@@ -20,19 +20,28 @@ export const Route = createFileRoute("/gallery")({
 function Gallery() {
   const { t } = useI18n();
   const images = [
-    { src: galeriMatcha.url, h: "tall" }, { src: galeriKopi.url, h: "short" }, { src: galeriCup.url, h: "short" },
-    { src: g1, h: "tall" }, { src: g2, h: "short" }, { src: about, h: "short" },
+    { src: galeriMatcha.url, h: "tall" },
+    { src: galeriKopi.url, h: "short" },
+    { src: galeriCup.url, h: "short" },
+    { src: g1, h: "tall" },
+    { src: g2, h: "short" },
+    { src: about, h: "short" },
   ];
   return (
     <div className="mx-auto max-w-7xl px-5 lg:px-8 py-20">
       <div className="max-w-2xl">
         <p className="text-xs uppercase tracking-[0.3em] text-primary">{t("gallery.eyebrow")}</p>
-        <h1 className="mt-4 font-display text-5xl md:text-6xl leading-tight">{t("gallery.title")}</h1>
+        <h1 className="mt-4 font-display text-5xl md:text-6xl leading-tight">
+          {t("gallery.title")}
+        </h1>
       </div>
 
       <div className="mt-14 columns-1 sm:columns-2 lg:columns-3 gap-5 [column-fill:_balance]">
         {images.map((img, i) => (
-          <div key={i} className="mb-5 break-inside-avoid overflow-hidden rounded-2xl border border-border group">
+          <div
+            key={i}
+            className="mb-5 break-inside-avoid overflow-hidden rounded-2xl border border-border group"
+          >
             <img
               src={img.src}
               alt={`Kopi Noit gallery ${i + 1}`}
