@@ -43,8 +43,8 @@ function Index() {
             </div>
           </div>
 
-          <div className="relative">
-            <div className="absolute -inset-8 bg-gradient-to-br from-primary/20 via-secondary/10 to-transparent blur-3xl" />
+          <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
+            <div className="absolute -inset-6 bg-gradient-to-br from-primary/20 via-secondary/10 to-transparent blur-3xl" />
             <div className="relative rounded-3xl overflow-hidden border border-border shadow-2xl">
               <img src={heroImg} alt="Menu Kopi Noit" width={1080} height={1080} className="w-full h-auto" />
             </div>
