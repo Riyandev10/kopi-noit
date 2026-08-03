@@ -1,8 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
-import { CreditCard, QrCode, Banknote, ArrowRight } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { CreditCard, QrCode, Banknote, ArrowRight, Copy, Check, Clock, Landmark } from "lucide-react";
 import { useCart, formatIDR } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n";
+import {
+  ACCOUNT_NAME,
+  BANKS,
+  TRANSFER_WINDOW_MS,
+  formatDeadline,
+  makeUniqueCode,
+  makeVaNumber,
+  type BankId,
+} from "@/lib/payment";
 import qrisImg from "@/assets/qris-kopinoit.jpeg";
 
 export const Route = createFileRoute("/checkout")({
@@ -13,12 +22,25 @@ export const Route = createFileRoute("/checkout")({
 type PayMethod = "qris" | "transfer" | "cod";
 
 function Checkout() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const navigate = useNavigate();
   const { items, total, clear } = useCart();
   const [method, setMethod] = useState<PayMethod>("qris");
+  const [bankId, setBankId] = useState<BankId>("bca");
   const [processing, setProcessing] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [orderId, setOrderId] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", address: "", notes: "" });
+
+  useEffect(() => {
+    setOrderId("NOIT-" + Math.random().toString(36).slice(2, 8).toUpperCase());
+  }, []);
+
+  const bank = BANKS.find((b) => b.id === bankId)!;
+  const uniqueCode = orderId ? makeUniqueCode(orderId) : 0;
+  const vaNumber = orderId ? makeVaNumber(bank, orderId) : "";
+  const isTransfer = method === "transfer";
+  const payTotal = isTransfer ? total + uniqueCode : total;
 
   if (items.length === 0 && !processing) {
     return (
@@ -29,32 +51,43 @@ function Checkout() {
     );
   }
 
+  const copyVa = async () => {
+    try {
+      await navigator.clipboard.writeText(vaNumber);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {}
+  };
+
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim() || !form.address.trim()) return;
     setProcessing(true);
-    const orderId = "NOIT-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    const expiresAt = new Date(Date.now() + TRANSFER_WINDOW_MS).toISOString();
     const payload = {
       id: orderId,
       createdAt: new Date().toISOString(),
       items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
       total,
+      payTotal,
       method,
-      paymentStatus: method === "cod" ? "unpaid" : "paid",
+      paymentStatus: method === "cod" ? "unpaid" : isTransfer ? "pending" : "paid",
+      transfer: isTransfer
+        ? { bank: bank.name, bankFull: bank.short, va: vaNumber, accountName: ACCOUNT_NAME, uniqueCode, expiresAt }
+        : null,
       customer: { ...form },
     };
     try { localStorage.setItem("lastOrder", JSON.stringify(payload)); } catch {}
-    // Simulate payment gateway processing
-    // COD tidak lewat payment gateway — pesanan langsung dibuat
+    // COD & transfer bank tidak lewat payment gateway — pesanan dibuat, pembayaran menyusul
     setTimeout(() => {
       clear();
       navigate({ to: "/order-success" });
-    }, method === "cod" ? 700 : 1400);
+    }, method === "qris" ? 1400 : 700);
   };
 
   const methods: { id: PayMethod; label: string; Icon: typeof CreditCard; desc: string }[] = [
     { id: "qris", label: t("pay.qris"), Icon: QrCode, desc: "GoPay, OVO, Dana, ShopeePay" },
-    { id: "transfer", label: t("pay.transfer"), Icon: CreditCard, desc: "BCA, Mandiri, BRI" },
+    { id: "transfer", label: t("pay.transfer"), Icon: CreditCard, desc: "BCA, Mandiri, BRI, BNI" },
     { id: "cod", label: t("pay.cod"), Icon: Banknote, desc: "Cash saat pesanan tiba" },
   ];
 
@@ -85,6 +118,7 @@ function Checkout() {
                 );
               })}
             </div>
+
             {method === "cod" && (
               <div className="mt-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
                 <p className="text-sm font-medium">{t("checkout.codTitle")}</p>
@@ -95,11 +129,66 @@ function Checkout() {
                 </div>
               </div>
             )}
+
             {method === "qris" && (
               <div className="mt-5 rounded-xl border border-primary/30 bg-primary/5 p-4 text-center">
                 <p className="text-sm font-medium">{t("checkout.qrisTitle")}</p>
                 <img src={qrisImg} alt="QRIS Kopi Noit" className="mx-auto mt-3 w-full max-w-[280px] rounded-lg border border-border bg-white" />
                 <p className="mt-3 text-xs text-muted-foreground">{t("checkout.qrisHint")}</p>
+              </div>
+            )}
+
+            {isTransfer && (
+              <div className="mt-5 space-y-4">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("transfer.chooseBank")}</p>
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {BANKS.map((b) => {
+                      const active = bankId === b.id;
+                      return (
+                        <button type="button" key={b.id} onClick={() => setBankId(b.id)} className={`rounded-xl border p-3 text-left transition ${active ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"}`}>
+                          <Landmark className={`size-4 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                          <p className="mt-2 text-sm font-medium">{b.name}</p>
+                          <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{b.short}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("transfer.vaTitle")} · {bank.name}</p>
+                  <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-border bg-background/60 px-3.5 py-2.5">
+                    <span className="font-display text-lg tracking-wider text-primary break-all">{vaNumber || "—"}</span>
+                    <button type="button" onClick={copyVa} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-3 py-1.5 text-xs text-primary hover:bg-primary/15 transition">
+                      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                      {copied ? t("transfer.copied") : t("transfer.copy")}
+                    </button>
+                  </div>
+                  <div className="mt-3 space-y-1.5 text-sm">
+                    <Row label={t("transfer.accName")} value={ACCOUNT_NAME} />
+                    <Row label={t("cart.subtotal")} value={formatIDR(total)} />
+                    <Row label={t("transfer.uniqueCode")} value={`+ ${uniqueCode}`} />
+                    <div className="border-t border-border my-2" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">{t("transfer.payAmount")}</span>
+                      <span className="font-display text-primary text-lg">{formatIDR(payTotal)}</span>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-xs text-muted-foreground leading-relaxed">{t("transfer.codeHint")}</p>
+                  <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-secondary">
+                    <Clock className="size-3.5" /> {t("transfer.deadline")} {formatDeadline(new Date(Date.now() + TRANSFER_WINDOW_MS).toISOString(), lang)}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-border bg-background/40 p-4">
+                  <p className="text-sm font-medium">{t("transfer.steps")}</p>
+                  <ol className="mt-2 space-y-1.5 text-xs text-muted-foreground leading-relaxed list-decimal pl-4">
+                    <li>{t("transfer.step1")}</li>
+                    <li>{t("transfer.step2")}</li>
+                    <li>{t("transfer.step3")}</li>
+                  </ol>
+                </div>
               </div>
             )}
           </div>
@@ -118,14 +207,26 @@ function Checkout() {
           <div className="border-t border-border my-4" />
           <div className="flex justify-between text-sm"><span className="text-muted-foreground">{t("cart.subtotal")}</span><span>{formatIDR(total)}</span></div>
           <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("cart.delivery")}</span><span className="text-primary">{t("cart.free")}</span></div>
-          <div className="flex justify-between font-display text-lg mt-3"><span>{t("cart.total")}</span><span className="text-gradient-gold">{formatIDR(total)}</span></div>
+          {isTransfer && (
+            <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("transfer.uniqueCode")}</span><span>+ {uniqueCode}</span></div>
+          )}
+          <div className="flex justify-between font-display text-lg mt-3"><span>{t("cart.total")}</span><span className="text-gradient-gold">{formatIDR(payTotal)}</span></div>
           <button type="submit" disabled={processing} className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-60">
             {processing
-              ? (method === "cod" ? t("checkout.processingOrder") : t("checkout.processingPay"))
-              : (<>{method === "cod" ? t("checkout.placeOrder") : t("checkout.payNow")} <ArrowRight className="size-4" /></>)}
+              ? (method === "qris" ? t("checkout.processingPay") : t("checkout.processingOrder"))
+              : (<>{method === "qris" ? t("checkout.payNow") : isTransfer ? t("transfer.createOrder") : t("checkout.placeOrder")} <ArrowRight className="size-4" /></>)}
           </button>
         </aside>
       </form>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-muted-foreground">{label}</span>
+      <span>{value}</span>
     </div>
   );
 }
