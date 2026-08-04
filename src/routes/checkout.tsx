@@ -92,8 +92,10 @@ function Checkout() {
           <div className="rounded-2xl border border-border bg-card/40 p-6 space-y-4">
             <Field label={t("checkout.name")} value={form.name} onChange={(v) => setForm({ ...form, name: v })} required maxLength={100} />
             <Field label={t("checkout.phone")} value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} required maxLength={20} type="tel" />
+            <Field label={t("checkout.email")} value={form.email} onChange={(v) => setForm({ ...form, email: v })} maxLength={160} type="email" />
             <Field label={t("checkout.address")} value={form.address} onChange={(v) => setForm({ ...form, address: v })} required maxLength={300} textarea />
             <Field label={t("checkout.notes")} value={form.notes} onChange={(v) => setForm({ ...form, notes: v })} maxLength={300} textarea />
+
           </div>
 
           <div className="rounded-2xl border border-border bg-card/40 p-6">
