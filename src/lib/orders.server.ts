@@ -85,7 +85,7 @@ export async function notify(order: OrderRow, event: string, extra?: string) {
   ].filter(Boolean);
   const body = lines.join("\n");
 
-  const rows: Record<string, unknown>[] = [
+  const rows = [
     {
       order_id: order.id,
       event,
@@ -144,9 +144,9 @@ export async function setStatus(
   opts: { note?: string; event?: string; adminNote?: string } = {},
 ) {
   const db = await admin();
-  const patch: Record<string, unknown> = { status };
-  if (status === "paid") patch['paid_at'] = new Date().toISOString();
-  if (opts.adminNote !== undefined) patch['admin_note'] = opts.adminNote;
+  const patch: { status: OrderStatus; paid_at?: string; admin_note?: string } = { status };
+  if (status === "paid") patch.paid_at = new Date().toISOString();
+  if (opts.adminNote !== undefined) patch.admin_note = opts.adminNote;
 
   const { data, error } = await db
     .from("orders")
