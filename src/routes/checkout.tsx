@@ -150,28 +150,17 @@ function Checkout() {
 
                 <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
                   <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("transfer.vaTitle")} · {bank.name}</p>
-                  <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-border bg-background/60 px-3.5 py-2.5">
-                    <span className="font-display text-lg tracking-wider text-primary break-all">{vaNumber || "—"}</span>
-                    <button type="button" onClick={copyVa} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-3 py-1.5 text-xs text-primary hover:bg-primary/15 transition">
-                      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-                      {copied ? t("transfer.copied") : t("transfer.copy")}
-                    </button>
-                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{t("transfer.vaAfterOrder")}</p>
                   <div className="mt-3 space-y-1.5 text-sm">
                     <Row label={t("transfer.accName")} value={ACCOUNT_NAME} />
                     <Row label={t("cart.subtotal")} value={formatIDR(total)} />
-                    <Row label={t("transfer.uniqueCode")} value={`+ ${uniqueCode}`} />
-                    <div className="border-t border-border my-2" />
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">{t("transfer.payAmount")}</span>
-                      <span className="font-display text-primary text-lg">{formatIDR(payTotal)}</span>
-                    </div>
                   </div>
                   <p className="mt-3 text-xs text-muted-foreground leading-relaxed">{t("transfer.codeHint")}</p>
                   <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-secondary">
                     <Clock className="size-3.5" /> {t("transfer.deadline")} {formatDeadline(new Date(Date.now() + TRANSFER_WINDOW_MS).toISOString(), lang)}
                   </p>
                 </div>
+
 
                 <div className="rounded-xl border border-border bg-background/40 p-4">
                   <p className="text-sm font-medium">{t("transfer.steps")}</p>
