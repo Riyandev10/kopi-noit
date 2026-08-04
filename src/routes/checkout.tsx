@@ -189,8 +189,9 @@ function Checkout() {
           <div className="flex justify-between text-sm"><span className="text-muted-foreground">{t("cart.subtotal")}</span><span>{formatIDR(total)}</span></div>
           <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("cart.delivery")}</span><span className="text-primary">{t("cart.free")}</span></div>
           {isTransfer && (
-            <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("transfer.uniqueCode")}</span><span>+ {uniqueCode}</span></div>
+            <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("transfer.uniqueCode")}</span><span className="text-muted-foreground">{t("transfer.afterOrder")}</span></div>
           )}
+
           <div className="flex justify-between font-display text-lg mt-3"><span>{t("cart.total")}</span><span className="text-gradient-gold">{formatIDR(payTotal)}</span></div>
           <button type="submit" disabled={processing} className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-60">
             {processing
