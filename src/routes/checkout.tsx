@@ -1,21 +1,24 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
-import { CreditCard, QrCode, Banknote, ArrowRight, Copy, Check, Clock, Landmark } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { CreditCard, QrCode, Banknote, ArrowRight, Clock, Landmark } from "lucide-react";
 import { useCart, formatIDR } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n";
-import {
-  ACCOUNT_NAME,
-  BANKS,
-  TRANSFER_WINDOW_MS,
-  formatDeadline,
-  makeUniqueCode,
-  makeVaNumber,
-  type BankId,
-} from "@/lib/payment";
+import { ACCOUNT_NAME, BANKS, TRANSFER_WINDOW_MS, formatDeadline, type BankId } from "@/lib/payment";
+import { createOrder } from "@/lib/orders.functions";
 import qrisImg from "@/assets/qris-kopinoit.jpeg";
 
 export const Route = createFileRoute("/checkout")({
-  head: () => ({ meta: [{ title: "Checkout — Kopi Noit" }] }),
+  head: () => ({
+    meta: [
+      { title: "Checkout — Kopi Noit" },
+      { name: "description", content: "Selesaikan pesanan kopi Kopi Noit: QRIS, transfer bank virtual account, atau bayar di tempat." },
+      { property: "og:title", content: "Checkout — Kopi Noit" },
+      { property: "og:description", content: "Bayar pesanan kopi kamu dengan QRIS, transfer bank, atau bayar di tempat." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: Checkout,
 });
 
@@ -25,22 +28,16 @@ function Checkout() {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const { items, total, clear } = useCart();
+  const submitOrder = useServerFn(createOrder);
   const [method, setMethod] = useState<PayMethod>("qris");
   const [bankId, setBankId] = useState<BankId>("bca");
   const [processing, setProcessing] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [orderId, setOrderId] = useState("");
-  const [form, setForm] = useState({ name: "", phone: "", address: "", notes: "" });
-
-  useEffect(() => {
-    setOrderId("NOIT-" + Math.random().toString(36).slice(2, 8).toUpperCase());
-  }, []);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", notes: "" });
 
   const bank = BANKS.find((b) => b.id === bankId)!;
-  const uniqueCode = orderId ? makeUniqueCode(orderId) : 0;
-  const vaNumber = orderId ? makeVaNumber(bank, orderId) : "";
   const isTransfer = method === "transfer";
-  const payTotal = isTransfer ? total + uniqueCode : total;
+  const payTotal = total;
 
   if (items.length === 0 && !processing) {
     return (
@@ -51,38 +48,32 @@ function Checkout() {
     );
   }
 
-  const copyVa = async () => {
-    try {
-      await navigator.clipboard.writeText(vaNumber);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {}
-  };
-
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim() || !form.address.trim()) return;
     setProcessing(true);
-    const expiresAt = new Date(Date.now() + TRANSFER_WINDOW_MS).toISOString();
-    const payload = {
-      id: orderId,
-      createdAt: new Date().toISOString(),
-      items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
-      total,
-      payTotal,
-      method,
-      paymentStatus: method === "cod" ? "unpaid" : isTransfer ? "pending" : "paid",
-      transfer: isTransfer
-        ? { bank: bank.name, bankFull: bank.short, va: vaNumber, accountName: ACCOUNT_NAME, uniqueCode, expiresAt }
-        : null,
-      customer: { ...form },
-    };
-    try { localStorage.setItem("lastOrder", JSON.stringify(payload)); } catch {}
-    // COD & transfer bank tidak lewat payment gateway — pesanan dibuat, pembayaran menyusul
-    setTimeout(() => {
+    setError("");
+    try {
+      const res = await submitOrder({
+        data: {
+          items: items.map((i) => ({ id: i.id, name: i.name, qty: i.qty, price: i.price })),
+          method,
+          bankId: isTransfer ? bankId : undefined,
+          customer: {
+            name: form.name.trim(),
+            phone: form.phone.trim(),
+            email: form.email.trim(),
+            address: form.address.trim(),
+            notes: form.notes.trim(),
+          },
+        },
+      });
       clear();
-      navigate({ to: "/order-success" });
-    }, method === "qris" ? 1400 : 700);
+      navigate({ to: "/order/$code", params: { code: res.code }, search: { t: res.token } });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("checkout.failed"));
+      setProcessing(false);
+    }
   };
 
   const methods: { id: PayMethod; label: string; Icon: typeof CreditCard; desc: string }[] = [
@@ -90,6 +81,7 @@ function Checkout() {
     { id: "transfer", label: t("pay.transfer"), Icon: CreditCard, desc: "BCA, Mandiri, BRI, BNI" },
     { id: "cod", label: t("pay.cod"), Icon: Banknote, desc: "Cash saat pesanan tiba" },
   ];
+
 
   return (
     <div className="mx-auto max-w-5xl px-5 lg:px-8 py-20">
@@ -100,8 +92,10 @@ function Checkout() {
           <div className="rounded-2xl border border-border bg-card/40 p-6 space-y-4">
             <Field label={t("checkout.name")} value={form.name} onChange={(v) => setForm({ ...form, name: v })} required maxLength={100} />
             <Field label={t("checkout.phone")} value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} required maxLength={20} type="tel" />
+            <Field label={t("checkout.email")} value={form.email} onChange={(v) => setForm({ ...form, email: v })} maxLength={160} type="email" />
             <Field label={t("checkout.address")} value={form.address} onChange={(v) => setForm({ ...form, address: v })} required maxLength={300} textarea />
             <Field label={t("checkout.notes")} value={form.notes} onChange={(v) => setForm({ ...form, notes: v })} maxLength={300} textarea />
+
           </div>
 
           <div className="rounded-2xl border border-border bg-card/40 p-6">
@@ -158,28 +152,17 @@ function Checkout() {
 
                 <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
                   <p className="text-xs uppercase tracking-widest text-muted-foreground">{t("transfer.vaTitle")} · {bank.name}</p>
-                  <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-border bg-background/60 px-3.5 py-2.5">
-                    <span className="font-display text-lg tracking-wider text-primary break-all">{vaNumber || "—"}</span>
-                    <button type="button" onClick={copyVa} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-3 py-1.5 text-xs text-primary hover:bg-primary/15 transition">
-                      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-                      {copied ? t("transfer.copied") : t("transfer.copy")}
-                    </button>
-                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{t("transfer.vaAfterOrder")}</p>
                   <div className="mt-3 space-y-1.5 text-sm">
                     <Row label={t("transfer.accName")} value={ACCOUNT_NAME} />
                     <Row label={t("cart.subtotal")} value={formatIDR(total)} />
-                    <Row label={t("transfer.uniqueCode")} value={`+ ${uniqueCode}`} />
-                    <div className="border-t border-border my-2" />
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">{t("transfer.payAmount")}</span>
-                      <span className="font-display text-primary text-lg">{formatIDR(payTotal)}</span>
-                    </div>
                   </div>
                   <p className="mt-3 text-xs text-muted-foreground leading-relaxed">{t("transfer.codeHint")}</p>
                   <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-secondary">
                     <Clock className="size-3.5" /> {t("transfer.deadline")} {formatDeadline(new Date(Date.now() + TRANSFER_WINDOW_MS).toISOString(), lang)}
                   </p>
                 </div>
+
 
                 <div className="rounded-xl border border-border bg-background/40 p-4">
                   <p className="text-sm font-medium">{t("transfer.steps")}</p>
@@ -208,14 +191,17 @@ function Checkout() {
           <div className="flex justify-between text-sm"><span className="text-muted-foreground">{t("cart.subtotal")}</span><span>{formatIDR(total)}</span></div>
           <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("cart.delivery")}</span><span className="text-primary">{t("cart.free")}</span></div>
           {isTransfer && (
-            <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("transfer.uniqueCode")}</span><span>+ {uniqueCode}</span></div>
+            <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("transfer.uniqueCode")}</span><span className="text-muted-foreground">{t("transfer.afterOrder")}</span></div>
           )}
+
           <div className="flex justify-between font-display text-lg mt-3"><span>{t("cart.total")}</span><span className="text-gradient-gold">{formatIDR(payTotal)}</span></div>
           <button type="submit" disabled={processing} className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-60">
             {processing
               ? (method === "qris" ? t("checkout.processingPay") : t("checkout.processingOrder"))
               : (<>{method === "qris" ? t("checkout.payNow") : isTransfer ? t("transfer.createOrder") : t("checkout.placeOrder")} <ArrowRight className="size-4" /></>)}
           </button>
+          {error && <p className="mt-3 text-xs text-destructive">{error}</p>}
+
         </aside>
       </form>
     </div>
