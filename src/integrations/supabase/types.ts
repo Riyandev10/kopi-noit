@@ -14,16 +14,158 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      order_status_history: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          order_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          order_id: string
+          status: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          access_token: string
+          account_name: string | null
+          admin_note: string | null
+          bank: string | null
+          bank_full: string | null
+          code: string
+          created_at: string
+          customer_address: string
+          customer_email: string | null
+          customer_name: string
+          customer_notes: string | null
+          customer_phone: string
+          expires_at: string | null
+          id: string
+          items: Json
+          method: string
+          paid_at: string | null
+          pay_total: number
+          proof_path: string | null
+          proof_uploaded_at: string | null
+          status: string
+          subtotal: number
+          unique_code: number
+          updated_at: string
+          va_number: string | null
+        }
+        Insert: {
+          access_token: string
+          account_name?: string | null
+          admin_note?: string | null
+          bank?: string | null
+          bank_full?: string | null
+          code: string
+          created_at?: string
+          customer_address: string
+          customer_email?: string | null
+          customer_name: string
+          customer_notes?: string | null
+          customer_phone: string
+          expires_at?: string | null
+          id?: string
+          items?: Json
+          method: string
+          paid_at?: string | null
+          pay_total?: number
+          proof_path?: string | null
+          proof_uploaded_at?: string | null
+          status?: string
+          subtotal?: number
+          unique_code?: number
+          updated_at?: string
+          va_number?: string | null
+        }
+        Update: {
+          access_token?: string
+          account_name?: string | null
+          admin_note?: string | null
+          bank?: string | null
+          bank_full?: string | null
+          code?: string
+          created_at?: string
+          customer_address?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_notes?: string | null
+          customer_phone?: string
+          expires_at?: string | null
+          id?: string
+          items?: Json
+          method?: string
+          paid_at?: string | null
+          pay_total?: number
+          proof_path?: string | null
+          proof_uploaded_at?: string | null
+          status?: string
+          subtotal?: number
+          unique_code?: number
+          updated_at?: string
+          va_number?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "staff"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +292,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "staff"],
+    },
   },
 } as const
