@@ -200,6 +200,8 @@ function Checkout() {
               ? (method === "qris" ? t("checkout.processingPay") : t("checkout.processingOrder"))
               : (<>{method === "qris" ? t("checkout.payNow") : isTransfer ? t("transfer.createOrder") : t("checkout.placeOrder")} <ArrowRight className="size-4" /></>)}
           </button>
+          {error && <p className="mt-3 text-xs text-destructive">{error}</p>}
+
         </aside>
       </form>
     </div>
