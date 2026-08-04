@@ -4,7 +4,7 @@ Kopi Noit lahir dari kebiasaan sederhana: ngopi sebentar saat pikiran mentok. Da
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://kopi-ngumpul-web.lovable.app
+**Live app**: https://kopi-noit.vercel.app/
 
 ## Build with Lovable
 
