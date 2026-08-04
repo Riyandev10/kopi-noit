@@ -20,6 +20,7 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicPaymentWebhookRouteImport } from './routes/api/public/payment-webhook'
+import { Route as ApiPublicExpireOrdersRouteImport } from './routes/api/public/expire-orders'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -76,6 +77,11 @@ const ApiPublicPaymentWebhookRoute = ApiPublicPaymentWebhookRouteImport.update({
   path: '/api/public/payment-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicExpireOrdersRoute = ApiPublicExpireOrdersRouteImport.update({
+  id: '/api/public/expire-orders',
+  path: '/api/public/expire-orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/order-success': typeof OrderSuccessRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/api/public/expire-orders': typeof ApiPublicExpireOrdersRoute
   '/api/public/payment-webhook': typeof ApiPublicPaymentWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/order-success': typeof OrderSuccessRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/api/public/expire-orders': typeof ApiPublicExpireOrdersRoute
   '/api/public/payment-webhook': typeof ApiPublicPaymentWebhookRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/order-success': typeof OrderSuccessRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/api/public/expire-orders': typeof ApiPublicExpireOrdersRoute
   '/api/public/payment-webhook': typeof ApiPublicPaymentWebhookRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/order-success'
     | '/privacy'
     | '/terms'
+    | '/api/public/expire-orders'
     | '/api/public/payment-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/order-success'
     | '/privacy'
     | '/terms'
+    | '/api/public/expire-orders'
     | '/api/public/payment-webhook'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/order-success'
     | '/privacy'
     | '/terms'
+    | '/api/public/expire-orders'
     | '/api/public/payment-webhook'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   OrderSuccessRoute: typeof OrderSuccessRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
+  ApiPublicExpireOrdersRoute: typeof ApiPublicExpireOrdersRoute
   ApiPublicPaymentWebhookRoute: typeof ApiPublicPaymentWebhookRoute
 }
 
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaymentWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/expire-orders': {
+      id: '/api/public/expire-orders'
+      path: '/api/public/expire-orders'
+      fullPath: '/api/public/expire-orders'
+      preLoaderRoute: typeof ApiPublicExpireOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrderSuccessRoute: OrderSuccessRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
+  ApiPublicExpireOrdersRoute: ApiPublicExpireOrdersRoute,
   ApiPublicPaymentWebhookRoute: ApiPublicPaymentWebhookRoute,
 }
 export const routeTree = rootRouteImport
