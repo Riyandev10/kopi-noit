@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      order_notifications: {
+        Row: {
+          body: string | null
+          channel: string
+          created_at: string
+          error: string | null
+          event: string
+          id: string
+          order_id: string
+          recipient: string | null
+          status: string
+          subject: string | null
+        }
+        Insert: {
+          body?: string | null
+          channel: string
+          created_at?: string
+          error?: string | null
+          event: string
+          id?: string
+          order_id: string
+          recipient?: string | null
+          status?: string
+          subject?: string | null
+        }
+        Update: {
+          body?: string | null
+          channel?: string
+          created_at?: string
+          error?: string | null
+          event?: string
+          id?: string
+          order_id?: string
+          recipient?: string | null
+          status?: string
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_status_history: {
         Row: {
           created_at: string
