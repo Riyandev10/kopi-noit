@@ -162,9 +162,11 @@ export async function setStatus(
   return data;
 }
 
-export async function assertAdmin(supabase: {
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-}, userId: string) {
+export async function assertAdmin(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: { rpc: (fn: any, args: any) => any },
+  userId: string,
+) {
   const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
   if (data !== true) throw new Error("Forbidden: butuh akses admin");
 }
