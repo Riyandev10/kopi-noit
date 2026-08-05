@@ -1,5 +1,5 @@
 // Server-only helpers for the order lifecycle. Never import from client code.
-import { BANKS, ACCOUNT_NAME, TRANSFER_WINDOW_MS, makeUniqueCode, makeVaNumber } from "./payment";
+import { BANKS, ACCOUNT_NAME, QRIS_WINDOW_MS, TRANSFER_WINDOW_MS, makeUniqueCode, makeVaNumber } from "./payment";
 
 export type OrderStatus =
   | "pending_payment"
@@ -35,6 +35,14 @@ export function buildTransfer(bankId: string, code: string) {
     account_name: ACCOUNT_NAME,
     unique_code: makeUniqueCode(code),
     expires_at: new Date(Date.now() + TRANSFER_WINDOW_MS).toISOString(),
+  };
+}
+
+/** QRIS: nominal dibuat unik dengan kode 3 digit agar rekonsiliasi mudah */
+export function buildQris(code: string) {
+  return {
+    unique_code: makeUniqueCode(code),
+    expires_at: new Date(Date.now() + QRIS_WINDOW_MS).toISOString(),
   };
 }
 
