@@ -2,12 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CheckCircle2, Clock, Copy, Check, Landmark, Loader2, MapPin, CreditCard,
-  MessageCircle, Upload, History, XCircle, Banknote,
+  MessageCircle, Upload, History, XCircle, Banknote, QrCode, Download,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { formatIDR } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n";
-import { formatCountdown, formatDeadline } from "@/lib/payment";
+import { QRIS_MERCHANT, formatCountdown, formatDeadline, makeQrisTrxId } from "@/lib/payment";
+import qrisImg from "@/assets/qris-kopinoit.jpeg";
 import { getOrder, uploadPaymentProof } from "@/lib/orders.functions";
 
 export const Route = createFileRoute("/order/$code")({
@@ -115,20 +116,21 @@ function OrderDetail() {
 
   const items = (order.items as OrderItem[]) ?? [];
   const isTransfer = order.method === "transfer" && !!order.va_number;
+  const isQris = order.method === "qris";
   const pending = order.status === "pending_payment";
   const awaiting = order.status === "awaiting_confirmation";
   const paid = order.status === "paid";
   const expired = order.status === "expired";
   const msLeft = order.expires_at ? new Date(order.expires_at).getTime() - now : 0;
 
-  const copyVa = async () => {
-    if (!order.va_number) return;
+  const copyText = async (value: string) => {
     try {
-      await navigator.clipboard.writeText(order.va_number);
+      await navigator.clipboard.writeText(value);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch { /* clipboard tidak tersedia */ }
   };
+  const copyVa = () => order.va_number && copyText(order.va_number);
 
   const onPickFile = async (file: File) => {
     setUploadError("");
@@ -158,6 +160,28 @@ function OrderDetail() {
     `Halo Kopi Noit, saya konfirmasi pesanan ${order.code} total ${formatIDR(order.pay_total)}. Nama: ${order.customer_name}`,
   );
 
+  const proofBox = () => (
+    <div className="mt-5 rounded-xl border border-border bg-background/40 p-4">
+      <p className="text-sm font-medium inline-flex items-center gap-2"><Upload className="size-4 text-primary" /> {isQris ? t("proof.titleQris") : t("proof.title")}</p>
+      <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{t("proof.hint")}</p>
+      {order.proof_uploaded_at && (
+        <p className="mt-2 text-xs text-secondary">{t("proof.uploadedAt")} {formatDeadline(order.proof_uploaded_at, lang)}</p>
+      )}
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp,application/pdf"
+        className="hidden"
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) void onPickFile(f); }}
+      />
+      <button type="button" disabled={uploading} onClick={() => fileRef.current?.click()} className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-60">
+        {uploading ? (<><Loader2 className="size-4 animate-spin" /> {t("proof.uploading")}</>) : (<><Upload className="size-4" /> {order.proof_path ? t("proof.replace") : t("proof.upload")}</>)}
+      </button>
+      {uploadError && <p className="mt-2 text-xs text-destructive">{uploadError}</p>}
+      {awaiting && <p className="mt-2 text-xs text-secondary">{t("proof.awaiting")}</p>}
+    </div>
+  );
+
   const statusChip = (status: string) => {
     const good = status === "paid";
     const bad = status === "expired" || status === "rejected";
@@ -181,6 +205,78 @@ function OrderDetail() {
           <span className={statusChip(order.status)}>{t(STATUS_KEY[order.status] ?? "st.pending")}</span>
         </div>
       </div>
+
+      {isQris && (pending || awaiting || expired) && (
+        <div className="mt-8 rounded-2xl border border-secondary/40 bg-secondary/5 p-6">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <span className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
+              <QrCode className="size-4" /> {t("qris.title")} · {QRIS_MERCHANT.acquirer}
+            </span>
+            {pending && (
+              <span className={`inline-flex items-center gap-1.5 ${statusChip(msLeft <= 0 ? "expired" : "pending")}`}>
+                <Clock className="size-3.5" />
+                {msLeft <= 0 ? t("qris.expired") : `${t("qris.timeLeft")} ${formatCountdown(msLeft)}`}
+              </span>
+            )}
+          </div>
+
+          {!expired && msLeft > 0 && (
+            <div className="mt-4 text-center">
+              <p className="text-xs text-muted-foreground">{t("qris.scan")}</p>
+              <img src={qrisImg} alt="QRIS Kopi Noit" className="mx-auto mt-3 w-full max-w-[280px] rounded-xl border border-border bg-white p-2" />
+              <a href={qrisImg} download={`qris-${order.code}.jpeg`} className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-3.5 py-1.5 text-xs text-primary hover:bg-primary/15 transition">
+                <Download className="size-3.5" /> {t("qris.download")}
+              </a>
+            </div>
+          )}
+
+          <div className="mt-5 space-y-1.5 text-sm">
+            <div className="flex justify-between"><span className="text-muted-foreground">{t("qris.merchant")}</span><span>{QRIS_MERCHANT.name}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t("qris.nmid")}</span><span className="text-xs">{QRIS_MERCHANT.nmid}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t("qris.trxId")}</span><span className="text-xs">{makeQrisTrxId(order.code)}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t("cart.subtotal")}</span><span>{formatIDR(order.subtotal)}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t("transfer.uniqueCode")}</span><span>+ {order.unique_code}</span></div>
+            <div className="border-t border-border my-2" />
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-muted-foreground">{t("qris.amount")}</span>
+              <span className="inline-flex items-center gap-2">
+                <span className="font-display text-lg text-primary">{formatIDR(order.pay_total)}</span>
+                <button type="button" onClick={() => void copyText(String(order.pay_total))} className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-2.5 py-1 text-xs text-primary hover:bg-primary/15 transition">
+                  {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                  {copied ? t("transfer.copied") : t("qris.copyAmount")}
+                </button>
+              </span>
+            </div>
+          </div>
+
+          {order.expires_at && !expired && (
+            <p className="mt-3 text-xs text-muted-foreground">{t("transfer.deadline")} {formatDeadline(order.expires_at, lang)}</p>
+          )}
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{t("qris.hint")}</p>
+
+          {pending && msLeft > 0 && (
+            <p className="mt-3 inline-flex items-center gap-2 text-xs text-secondary"><Loader2 className="size-3.5 animate-spin" /> {t("pay.waiting")} {t("pay.autoCheck")}</p>
+          )}
+
+          <div className="mt-5 rounded-xl border border-border bg-background/40 p-4">
+            <p className="text-sm font-medium">{t("qris.steps")}</p>
+            <ol className="mt-2 space-y-1.5 text-xs text-muted-foreground leading-relaxed list-decimal pl-4">
+              <li>{t("qris.step1")}</li>
+              <li>{t("qris.step2")}</li>
+              <li>{t("qris.step3")}</li>
+              <li>{t("qris.step4")}</li>
+            </ol>
+          </div>
+
+          {!paid && !expired && proofBox()}
+
+          {expired && (
+            <button type="button" onClick={() => navigate({ to: "/menu" })} className="mt-5 w-full rounded-full border border-border px-5 py-3 text-sm hover:border-primary/50 transition">
+              {t("pay.newOrder")}
+            </button>
+          )}
+        </div>
+      )}
 
       {isTransfer && (pending || awaiting || expired) && (
         <div className="mt-8 rounded-2xl border border-secondary/40 bg-secondary/5 p-6">
@@ -217,27 +313,7 @@ function OrderDetail() {
           )}
           <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{t("transfer.codeHint")}</p>
 
-          {!paid && !expired && (
-            <div className="mt-5 rounded-xl border border-border bg-background/40 p-4">
-              <p className="text-sm font-medium inline-flex items-center gap-2"><Upload className="size-4 text-primary" /> {t("proof.title")}</p>
-              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{t("proof.hint")}</p>
-              {order.proof_uploaded_at && (
-                <p className="mt-2 text-xs text-secondary">{t("proof.uploadedAt")} {formatDeadline(order.proof_uploaded_at, lang)}</p>
-              )}
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/png,image/jpeg,image/webp,application/pdf"
-                className="hidden"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) void onPickFile(f); }}
-              />
-              <button type="button" disabled={uploading} onClick={() => fileRef.current?.click()} className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-60">
-                {uploading ? (<><Loader2 className="size-4 animate-spin" /> {t("proof.uploading")}</>) : (<><Upload className="size-4" /> {order.proof_path ? t("proof.replace") : t("proof.upload")}</>)}
-              </button>
-              {uploadError && <p className="mt-2 text-xs text-destructive">{uploadError}</p>}
-              {awaiting && <p className="mt-2 text-xs text-secondary">{t("proof.awaiting")}</p>}
-            </div>
-          )}
+          {!paid && !expired && proofBox()}
 
           {expired && (
             <button type="button" onClick={() => navigate({ to: "/menu" })} className="mt-5 w-full rounded-full border border-border px-5 py-3 text-sm hover:border-primary/50 transition">
