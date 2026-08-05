@@ -4,9 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { CreditCard, QrCode, Banknote, ArrowRight, Clock, Landmark } from "lucide-react";
 import { useCart, formatIDR } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n";
-import { ACCOUNT_NAME, BANKS, TRANSFER_WINDOW_MS, formatDeadline, type BankId } from "@/lib/payment";
+import { ACCOUNT_NAME, BANKS, QRIS_MERCHANT, QRIS_WINDOW_MS, TRANSFER_WINDOW_MS, formatDeadline, type BankId } from "@/lib/payment";
 import { createOrder } from "@/lib/orders.functions";
-import qrisImg from "@/assets/qris-kopinoit.jpeg";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -125,10 +124,28 @@ function Checkout() {
             )}
 
             {method === "qris" && (
-              <div className="mt-5 rounded-xl border border-primary/30 bg-primary/5 p-4 text-center">
-                <p className="text-sm font-medium">{t("checkout.qrisTitle")}</p>
-                <img src={qrisImg} alt="QRIS Kopi Noit" className="mx-auto mt-3 w-full max-w-[280px] rounded-lg border border-border bg-white" />
-                <p className="mt-3 text-xs text-muted-foreground">{t("checkout.qrisHint")}</p>
+              <div className="mt-5 space-y-4">
+                <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+                  <p className="text-sm font-medium inline-flex items-center gap-2"><QrCode className="size-4 text-primary" /> {t("qris.checkoutTitle")}</p>
+                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{t("qris.checkoutHint")}</p>
+                  <div className="mt-3 space-y-1.5 text-sm">
+                    <Row label={t("qris.merchant")} value={QRIS_MERCHANT.name} />
+                    <Row label={t("cart.subtotal")} value={formatIDR(total)} />
+                  </div>
+                  <p className="mt-3 text-xs text-muted-foreground leading-relaxed">{t("qris.hint")}</p>
+                  <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-secondary">
+                    <Clock className="size-3.5" /> {t("transfer.deadline")} {formatDeadline(new Date(Date.now() + QRIS_WINDOW_MS).toISOString(), lang)}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-border bg-background/40 p-4">
+                  <p className="text-sm font-medium">{t("qris.steps")}</p>
+                  <ol className="mt-2 space-y-1.5 text-xs text-muted-foreground leading-relaxed list-decimal pl-4">
+                    <li>{t("qris.step1")}</li>
+                    <li>{t("qris.step2")}</li>
+                    <li>{t("qris.step3")}</li>
+                    <li>{t("qris.step4")}</li>
+                  </ol>
+                </div>
               </div>
             )}
 
@@ -190,15 +207,15 @@ function Checkout() {
           <div className="border-t border-border my-4" />
           <div className="flex justify-between text-sm"><span className="text-muted-foreground">{t("cart.subtotal")}</span><span>{formatIDR(total)}</span></div>
           <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("cart.delivery")}</span><span className="text-primary">{t("cart.free")}</span></div>
-          {isTransfer && (
+          {method !== "cod" && (
             <div className="flex justify-between text-sm mt-1"><span className="text-muted-foreground">{t("transfer.uniqueCode")}</span><span className="text-muted-foreground">{t("transfer.afterOrder")}</span></div>
           )}
 
           <div className="flex justify-between font-display text-lg mt-3"><span>{t("cart.total")}</span><span className="text-gradient-gold">{formatIDR(payTotal)}</span></div>
           <button type="submit" disabled={processing} className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-60">
             {processing
-              ? (method === "qris" ? t("checkout.processingPay") : t("checkout.processingOrder"))
-              : (<>{method === "qris" ? t("checkout.payNow") : isTransfer ? t("transfer.createOrder") : t("checkout.placeOrder")} <ArrowRight className="size-4" /></>)}
+              ? t("checkout.processingOrder")
+              : (<>{method === "qris" ? t("qris.createOrder") : isTransfer ? t("transfer.createOrder") : t("checkout.placeOrder")} <ArrowRight className="size-4" /></>)}
           </button>
           {error && <p className="mt-3 text-xs text-destructive">{error}</p>}
 

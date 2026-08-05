@@ -20,10 +20,14 @@ export const createOrder = createServerFn({ method: "POST" })
     const code = helpers.makeOrderCode();
     const token = helpers.randomToken(24);
     const isTransfer = data.method === "transfer";
+    const isQris = data.method === "qris";
     const transfer = isTransfer ? helpers.buildTransfer(data.bankId ?? "bca", code) : null;
-    const uniqueCode = transfer?.unique_code ?? 0;
-    const status =
-      data.method === "cod" ? "cod_unpaid" : isTransfer ? "pending_payment" : "paid";
+    const qris = isQris ? helpers.buildQris(code) : null;
+    const uniqueCode = transfer?.unique_code ?? qris?.unique_code ?? 0;
+    const expiresAt = transfer?.expires_at ?? qris?.expires_at ?? null;
+    // QRIS & transfer sama-sama menunggu pembayaran nyata — tidak pernah langsung "paid".
+    const status = data.method === "cod" ? "cod_unpaid" : "pending_payment";
+
 
     const { data: row, error } = await supabaseAdmin
       .from("orders")
@@ -44,17 +48,17 @@ export const createOrder = createServerFn({ method: "POST" })
         bank: transfer?.bank ?? null,
         bank_full: transfer?.bank_full ?? null,
         va_number: transfer?.va_number ?? null,
-        account_name: transfer?.account_name ?? null,
-        expires_at: transfer?.expires_at ?? null,
-        paid_at: status === "paid" ? new Date().toISOString() : null,
+        account_name: transfer ? transfer.account_name : isQris ? "KOPI NOIT" : null,
+        expires_at: expiresAt,
+        paid_at: null,
       })
       .select("id, code, customer_name, customer_phone, customer_email, pay_total, va_number, bank, status")
       .single();
 
     if (error || !row) throw new Error(error?.message ?? "Gagal membuat pesanan");
 
-    await helpers.recordStatus(row.id, "pending_payment", "Pesanan dibuat");
-    if (status !== "pending_payment") await helpers.recordStatus(row.id, status);
+    await helpers.recordStatus(row.id, status, "Pesanan dibuat");
+
     await helpers.notify(row, "created");
 
     return { code, token };
