@@ -20,10 +20,14 @@ export const createOrder = createServerFn({ method: "POST" })
     const code = helpers.makeOrderCode();
     const token = helpers.randomToken(24);
     const isTransfer = data.method === "transfer";
+    const isQris = data.method === "qris";
     const transfer = isTransfer ? helpers.buildTransfer(data.bankId ?? "bca", code) : null;
-    const uniqueCode = transfer?.unique_code ?? 0;
-    const status =
-      data.method === "cod" ? "cod_unpaid" : isTransfer ? "pending_payment" : "paid";
+    const qris = isQris ? helpers.buildQris(code) : null;
+    const uniqueCode = transfer?.unique_code ?? qris?.unique_code ?? 0;
+    const expiresAt = transfer?.expires_at ?? qris?.expires_at ?? null;
+    // QRIS & transfer sama-sama menunggu pembayaran nyata — tidak pernah langsung "paid".
+    const status = data.method === "cod" ? "cod_unpaid" : "pending_payment";
+
 
     const { data: row, error } = await supabaseAdmin
       .from("orders")
