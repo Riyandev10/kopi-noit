@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_secrets: {
+        Row: {
+          created_at: string
+          key: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          value?: string
+        }
+        Relationships: []
+      }
       order_notifications: {
         Row: {
           body: string | null
@@ -203,6 +221,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_set_order_status: {
+        Args: { _note: string; _order_id: string; _status: string }
+        Returns: Json
+      }
+      expire_stale_orders: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -210,6 +233,44 @@ export type Database = {
         }
         Returns: boolean
       }
+      order_attach_proof: {
+        Args: { _code: string; _path: string; _token: string }
+        Returns: Json
+      }
+      order_by_token: { Args: { _code: string; _token: string }; Returns: Json }
+      order_created: {
+        Args: { _code: string; _token: string }
+        Returns: undefined
+      }
+      order_log: {
+        Args: {
+          _event: string
+          _note: string
+          _order_id: string
+          _status: string
+        }
+        Returns: undefined
+      }
+      order_mark_paid: {
+        Args: {
+          _amount: number
+          _code: string
+          _reference: string
+          _secret: string
+          _va: string
+        }
+        Returns: Json
+      }
+      order_set_status: {
+        Args: {
+          _event: string
+          _note: string
+          _order_id: string
+          _status: string
+        }
+        Returns: undefined
+      }
+      status_label: { Args: { _status: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "staff"
