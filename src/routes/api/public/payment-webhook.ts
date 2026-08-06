@@ -46,31 +46,21 @@ export const Route = createFileRoute("/api/public/payment-webhook")({
           return json({ error: "Payload tidak valid" }, 400);
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const helpers = await import("@/lib/orders.server");
+        const { serverPublicClient } = await import("@/lib/supabase-public.server");
+        const db = serverPublicClient();
 
-        const query = supabaseAdmin
-          .from("orders")
-          .select("id, status, pay_total, expires_at, method");
-        const { data: order } = await (parsed.va_number
-          ? query.eq("va_number", parsed.va_number)
-          : query.eq("code", parsed.order_code!))
-          .in("status", ["pending_payment", "awaiting_confirmation"])
-          .order("created_at", { ascending: false })
-          .maybeSingle();
-
-        if (!order) return json({ error: "Pesanan tidak ditemukan" }, 404);
-        if (order.expires_at && new Date(order.expires_at).getTime() < Date.now()) {
-          return json({ error: "Batas waktu pembayaran sudah lewat" }, 409);
-        }
-        if (order.pay_total !== parsed.amount) {
-          return json({ error: "Jumlah pembayaran tidak sesuai" }, 409);
-        }
-
-        await helpers.setStatus(order.id, "paid", {
-          note: `Pembayaran ${order.method === "qris" ? "QRIS" : "transfer"} terverifikasi otomatis${parsed.reference ? ` · ref ${parsed.reference}` : ""}`,
-          event: "payment_webhook",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data, error } = await (db.rpc as any)("order_mark_paid", {
+          _secret: secret,
+          _va: parsed.va_number ?? null,
+          _code: parsed.order_code ?? null,
+          _amount: parsed.amount,
+          _reference: parsed.reference ?? null,
         });
+        if (error) return json({ error: error.message }, 400);
+
+        const result = (data ?? {}) as { ok?: boolean; error?: string };
+        if (!result.ok) return json({ error: result.error ?? "Gagal memproses" }, 409);
 
         return json({ ok: true });
       },
