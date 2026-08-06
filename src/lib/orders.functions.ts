@@ -6,6 +6,7 @@ import {
   orderKeySchema,
   proofSchema,
 } from "./orders.schemas";
+import type { OrderHistoryEntry, OrderPublic } from "./orders.schemas";
 
 export const createOrder = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => createOrderSchema.parse(data))
@@ -70,8 +71,8 @@ export const getOrder = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
 
     const payload = (result ?? {}) as {
-      order: Record<string, unknown> | null;
-      history: Array<Record<string, unknown>>;
+      order: OrderPublic | null;
+      history: OrderHistoryEntry[];
     };
     return { order: payload.order ?? null, history: payload.history ?? [] };
   });
