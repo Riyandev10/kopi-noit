@@ -39,3 +39,39 @@ export const adminStatusSchema = z.object({
 
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 export type OrderStatusKey = z.infer<typeof adminStatusSchema>["status"];
+
+export type OrderItem = z.infer<typeof orderItemSchema>;
+
+export type OrderPublic = {
+  id: string;
+  code: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string | null;
+  customer_address: string;
+  customer_notes: string | null;
+  items: OrderItem[];
+  subtotal: number;
+  unique_code: number;
+  pay_total: number;
+  method: string;
+  status: string;
+  bank: string | null;
+  bank_full: string | null;
+  va_number: string | null;
+  account_name: string | null;
+  expires_at: string | null;
+  proof_path: string | null;
+  proof_uploaded_at: string | null;
+  paid_at: string | null;
+  admin_note: string | null;
+  created_at: string;
+  updated_at?: string | null;
+};
+
+export type OrderHistoryEntry = {
+  id: string;
+  status: string;
+  note: string | null;
+  created_at: string;
+};
