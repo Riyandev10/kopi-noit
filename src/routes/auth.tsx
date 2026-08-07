@@ -21,7 +21,6 @@ function AuthPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -30,24 +29,28 @@ function AuthPage() {
     setBusy(true);
     setMessage("");
     try {
-      if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        navigate({ to: "/admin" });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin + "/auth" },
-        });
-        if (error) throw error;
-        setMessage("Akun dibuat. Cek email untuk konfirmasi, lalu masuk.");
-      }
-    } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Gagal masuk");
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      navigate({ to: "/admin" });
+    } catch {
+      setMessage("Email atau password salah.");
     } finally {
       setBusy(false);
     }
+  };
+
+  const onReset = async () => {
+    if (!email) {
+      setMessage("Masukkan email dulu untuk atur ulang password.");
+      return;
+    }
+    setBusy(true);
+    setMessage("");
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/reset-password",
+    });
+    setBusy(false);
+    setMessage(error ? "Gagal mengirim email atur ulang." : "Jika email terdaftar, tautan atur ulang sudah dikirim.");
   };
 
   const cls = "mt-1.5 w-full rounded-lg border border-border bg-background/60 px-3.5 py-2.5 text-sm outline-none focus:border-primary";
@@ -57,29 +60,30 @@ function AuthPage() {
       <div className="rounded-2xl border border-border bg-card/40 p-7">
         <Lock className="size-6 text-primary" />
         <h1 className="mt-3 font-display text-2xl">Masuk Admin</h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">Khusus tim Kopi Noit untuk memverifikasi pembayaran.</p>
+        <p className="mt-1.5 text-sm text-muted-foreground">Halaman khusus pemilik Kopi Noit. Pendaftaran akun baru ditutup.</p>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <label className="block">
             <span className="text-xs uppercase tracking-widest text-muted-foreground">Email</span>
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={cls} />
+            <input type="email" required autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} className={cls} />
           </label>
           <label className="block">
             <span className="text-xs uppercase tracking-widest text-muted-foreground">Password</span>
-            <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className={cls} />
+            <input type="password" required minLength={6} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className={cls} />
           </label>
           <button type="submit" disabled={busy} className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-60">
             {busy && <Loader2 className="size-4 animate-spin" />}
-            {mode === "signin" ? "Masuk" : "Daftar"}
+            Masuk
           </button>
         </form>
 
         {message && <p className="mt-4 text-xs text-secondary leading-relaxed">{message}</p>}
 
-        <button type="button" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMessage(""); }} className="mt-5 text-xs text-muted-foreground hover:text-primary transition">
-          {mode === "signin" ? "Belum punya akun admin? Daftar" : "Sudah punya akun? Masuk"}
+        <button type="button" onClick={onReset} disabled={busy} className="mt-5 text-xs text-muted-foreground hover:text-primary transition disabled:opacity-60">
+          Lupa password?
         </button>
       </div>
     </div>
   );
 }
+
