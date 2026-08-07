@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -28,6 +29,11 @@ import { Route as ApiPublicExpireOrdersRouteImport } from './routes/api/public/e
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/order/$code': typeof OrderCodeRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/order/$code': typeof OrderCodeRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/menu': typeof MenuRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/order/$code': typeof OrderCodeRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/menu'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/admin'
     | '/order/$code'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/menu'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/admin'
     | '/order/$code'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/menu'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/_authenticated/admin'
     | '/order/$code'
@@ -213,6 +225,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   MenuRoute: typeof MenuRoute
   PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   OrderCodeRoute: typeof OrderCodeRoute
   ApiPublicExpireOrdersRoute: typeof ApiPublicExpireOrdersRoute
@@ -226,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -351,6 +371,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   MenuRoute: MenuRoute,
   PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   OrderCodeRoute: OrderCodeRoute,
   ApiPublicExpireOrdersRoute: ApiPublicExpireOrdersRoute,
